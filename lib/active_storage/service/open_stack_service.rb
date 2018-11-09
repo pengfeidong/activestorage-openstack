@@ -7,7 +7,7 @@ module ActiveStorage
     def initialize(container:, credentials:, connection_options: {})
       settings = credentials.reverse_merge(connection_options: connection_options)
 
-      @client = Fog::OpenStack::Storage.new(settings)
+      @client = Fog::Storage::OpenStack.new(settings)
       @container = Fog::OpenStack.escape(container)
     end
 
@@ -52,7 +52,7 @@ module ActiveStorage
       instrument :delete, key: key do
         begin
           client.delete_object(container, key)
-        rescue Fog::OpenStack::Storage::NotFound
+        rescue Fog::Storage::OpenStack::NotFound
           false
         end
       end
@@ -73,7 +73,7 @@ module ActiveStorage
         begin
           answer = object_for(key)
           payload[:exist] = answer.present?
-        rescue Fog::OpenStack::Storage::NotFound
+        rescue Fog::Storage::OpenStack::NotFound
           payload[:exist] = false
         end
       end
